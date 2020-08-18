@@ -1,6 +1,7 @@
 package blog.hyojin4588.pjt.db;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import blog.hyojin4588.pjt.vo.UserVO;
@@ -12,7 +13,7 @@ public class UserDAO {
 				+ "(i_user, u_id, u_pw, u_nm, u_email) "
 				+ "VALUES "
 				+ "(seq_user.nextval, ?, ?, ?, ?) ";
-		
+
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
 			@Override
 			public int update(PreparedStatement ps) throws SQLException {
@@ -23,5 +24,36 @@ public class UserDAO {
 				return ps.executeUpdate();
 			}
 		});
-	};
+	}
+	
+	public static int selUser(UserVO param) {
+		String sql = " SELECT i_user, u_id, u_pw, u_nm FROM t_user WHERE u_id = ? ";
+		
+		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public ResultSet prepared(PreparedStatement ps) throws SQLException {
+				ResultSet rs = null;
+				ps.setNString(1, param.getUser_id());
+				rs = ps.executeQuery();
+				return rs;
+			}
+
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				if (rs.next()) {
+					String pw = rs.getNString("u_pw");
+//					System.out.println(pw);
+					String mypw = param.getUser_pw();
+//					System.out.println(mypw);
+					if(pw.equals(mypw)) { // 문자를 == 비교하면 주소값 비교하므로 안됨
+						return 1;
+					} else {
+						return 2;
+					}
+				}
+				return 3;
+			}
+		});
+	}
 }

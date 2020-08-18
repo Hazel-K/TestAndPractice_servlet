@@ -6,6 +6,10 @@
 <meta charset="UTF-8">
 <title>회원가입</title>
 <style>
+		.err {
+			font-size: 20px;
+			color: red;
+		}
         #title1 {
             margin: 30px auto;
             text-align: center;
@@ -53,16 +57,17 @@
     </style>
 </head>
 <body>
-	<h1 id="title1">머시기</h1>
+	<h1 id="title1">회원가입</h1>
+	<div class="err">${msg}</div>
     <div id="container">
         <div>
             <form id="frm" action="/join" method="POST" onsubmit="return chk()">
-                <div id="grid_ipt1"><label for="ipt1"></label><input name="user_id" id="ipt1" type="text" placeholder="아이디" required></div>
+                <div id="grid_ipt1"><label for="ipt1"></label><input name="user_id" id="ipt1" type="text" placeholder="아이디" required value="${data.user_id}"></div>
                 <div id="grid_ipt2"><label for="ipt2"></label><input name="user_pw" id="ipt2" type="text" placeholder="비밀번호" required></div>
                 <div id="grid_ipt3"><label for="ipt3"></label><input name="user_pwre" id="ipt3" type="text" placeholder="비밀번호 확인" required></div>
-                <div id="grid_ipt4"><label for="ipt4"></label><input name="nm" id="ipt4" type="text" placeholder="이름" required></div>
-                <div id="grid_ipt5"><label for="ipt5"></label><input name="email" id="ipt5" type="text" placeholder="이메일"></div>
-                <div id="grid_ipt6"><input name="" id="ipt6" type="submit" placeholder="비밀번호 확인" value="회원가입"></div>
+                <div id="grid_ipt4"><label for="ipt4"></label><input name="nm" id="ipt4" type="text" placeholder="이름" required value="${data.user_nm}"></div>
+                <div id="grid_ipt5"><label for="ipt5"></label><input name="email" id="ipt5" type="text" placeholder="이메일" value="${data.email}"></div>
+                <div id="grid_ipt6"><button onclick="gotoLogin()">돌아가기</button><input name="" id="ipt6" type="submit" placeholder="비밀번호 확인" value="가입하기"></div>
             </form>
         </div>
     </div>
@@ -97,6 +102,11 @@
                     return false;
                 }
             }
+        }
+        
+        function gotoLogin() {
+        	event.preventDefault();
+        	location.href = "/login";
         }
     </script>
 </body>
