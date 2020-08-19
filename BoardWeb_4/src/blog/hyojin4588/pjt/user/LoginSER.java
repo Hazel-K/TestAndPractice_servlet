@@ -32,8 +32,8 @@ public class LoginSER extends HttpServlet {
 		param.setUser_id(user_id);
 		param.setUser_pw(encrypt_pw);
 		
-		int result = UserDAO.selUser(param);
-		System.out.println(result);
+		int result = UserDAO.login(param);
+//		System.out.println(result);
 		if (result != 1) { // 오류처리
 			request.setAttribute("data", param);
 			switch(result) {

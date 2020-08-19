@@ -14,34 +14,32 @@ public class UserDAO {
 				+ "VALUES "
 				+ "(seq_user.nextval, ?, ?, ?, ?) ";
 
-		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() { // 인터페이스를 객체화한 것이 아니라 implements의 한 종류임
 			@Override
-			public int update(PreparedStatement ps) throws SQLException {
+			public void update(PreparedStatement ps) throws SQLException {
 				ps.setNString(1, param.getUser_id());
 				ps.setNString(2, param.getUser_pw());
 				ps.setNString(3, param.getUser_nm());
 				ps.setNString(4, param.getEmail());
-				return ps.executeUpdate();
 			}
 		});
 	}
 	
-	public static int selUser(UserVO param) {
+	public static int login(UserVO param) {
 		String sql = " SELECT i_user, u_id, u_pw, u_nm FROM t_user WHERE u_id = ? ";
 		
-		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() { // 인터페이스를 객체화한 것이 아니라 implements의 한 종류임
 
 			@Override
-			public ResultSet prepared(PreparedStatement ps) throws SQLException {
-				ResultSet rs = null;
+			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setNString(1, param.getUser_id());
-				rs = ps.executeQuery();
-				return rs;
 			}
 
 			@Override
 			public int executeQuery(ResultSet rs) throws SQLException {
 				if (rs.next()) {
+					param.setUser_nm(rs.getNString("u_nm"));
+					param.setI_user(rs.getInt("i_user"));
 					String pw = rs.getNString("u_pw");
 //					System.out.println(pw);
 					String mypw = param.getUser_pw();
