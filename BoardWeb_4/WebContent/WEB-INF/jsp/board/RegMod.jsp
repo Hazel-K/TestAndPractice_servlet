@@ -13,8 +13,14 @@
 		<form id="frm" action="regmod" method="post">
 			<div>제목 : <input type="text" name="title"></div>
 			<div>내용 : <textarea name="ctnt"></textarea></div>
-			<div><input type="submit" value="등록"></div>
+			<div><input type="submit" value="등록"><button onclick="gotoList()">리스트로</button></div>
 		</form>
 	</div>
+	<script>
+		function gotoList() {
+			event.preventDefault();
+			location.href="boardlist";
+		}
+	</script>
 </body>
 </html>

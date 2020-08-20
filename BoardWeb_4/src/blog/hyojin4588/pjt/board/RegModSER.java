@@ -25,7 +25,7 @@ public class RegModSER extends HttpServlet {
 			response.sendRedirect("login");
 			return;
 		}
-		ViewResolver.forward("board/RegMod", request, response);
+		ViewResolver.forwardLoginChk("board/RegMod", request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
