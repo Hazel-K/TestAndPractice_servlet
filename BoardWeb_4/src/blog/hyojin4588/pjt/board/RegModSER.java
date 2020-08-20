@@ -20,12 +20,22 @@ public class RegModSER extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession hs = request.getSession(); // 세션을 가져온다
-		if (null == hs.getAttribute(Const.LOGIN_USER)) {
-			response.sendRedirect("login");
-			return;
+		String strI_board = request.getParameter("i_board");
+//		System.out.println(strI_board);
+		BoardVO vo = null;
+		String titleMsg = "";
+		if(strI_board != null) {
+			int i_board = Integer.parseInt(strI_board);
+			BoardVO param = new BoardVO();
+			param.setI_board(i_board);
+			vo = BoardDAO.selDetail(param);
+			request.setAttribute("data", vo);
+			titleMsg = "글수정";
+		} else {
+			titleMsg = "글쓰기";
 		}
-		ViewResolver.forwardLoginChk("board/RegMod", request, response);
+		request.setAttribute("titleMsg", titleMsg);
+		ViewResolver.forward("board/RegMod", request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,17 +50,36 @@ public class RegModSER extends HttpServlet {
 		int i_user = vo.getI_user();
 		
 		BoardVO param = new BoardVO();
+		String strI_board = request.getParameter("i_board");
+
+		if(strI_board != null) {
+			param.setI_board(Integer.parseInt(strI_board));
+		}
 		param.setTitle(title);
 		param.setCtnt(ctnt);
 		param.setI_user(i_user);
 		
-		int result = BoardDAO.insBoard(param);
+		int result = 0;
+		
+		if(strI_board != null) {
+			result = BoardDAO.modDetail(param);
+		} else {
+			result = BoardDAO.insDetail(param);
+		}
+		
 		if (result != 1) {
 			request.setAttribute("errMsg", "글 등록에 실패했습니다.");
 			doGet(request, response);
 			return;
 		}
-		response.sendRedirect("boardlist");
+		
+		if(strI_board != null) {
+			response.sendRedirect("detail?i_board=" + Integer.parseInt(strI_board));
+			return;
+		} else {
+			response.sendRedirect("boardlist");
+			return;
+		}
 	}
 
 }

@@ -23,6 +23,9 @@ public class BoardDetailSER extends HttpServlet {
 		param.setI_board(i_board);
 		BoardVO vo = BoardDAO.selDetail(param);
 		request.setAttribute("data", vo);
+//		System.out.println(vo.getI_user());
+//		UserVO vo2 = (UserVO)request.getSession().getAttribute(Const.LOGIN_USER);
+//		System.out.println(vo2.getI_user());
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 

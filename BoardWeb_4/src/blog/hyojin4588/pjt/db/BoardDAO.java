@@ -9,7 +9,7 @@ import java.util.List;
 import blog.hyojin4588.pjt.vo.BoardVO;
 
 public class BoardDAO {
-	public static int insBoard(BoardVO param) {
+	public static int insDetail(BoardVO param) {
 		String sql = " INSERT INTO t_board4(i_board, title, ctnt, i_user) SELECT seq_board.nextval, ?, ?, ? FROM DUAL ";
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
 			@Override
@@ -17,6 +17,19 @@ public class BoardDAO {
 				ps.setNString(1, param.getTitle());
 				ps.setNString(2, param.getCtnt());
 				ps.setInt(3, param.getI_user());
+			}
+		});
+	}
+	
+	public static int modDetail(BoardVO param) {
+		String sql = " UPDATE t_board4 SET (title, ctnt, i_user) = (SELECT ?, ?, ? FROM DUAL) WHERE i_board = ? ";
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setNString(1, param.getTitle());
+				ps.setNString(2, param.getCtnt());
+				ps.setInt(3, param.getI_user());
+				ps.setInt(4, param.getI_board());
 			}
 		});
 	}
@@ -58,7 +71,7 @@ public class BoardDAO {
 	
 	public static BoardVO selDetail(BoardVO param) {
 		BoardVO vo = new BoardVO();
-		String sql = " SELECT a.title, a.ctnt, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE i_board = ? ";
+		String sql = " SELECT a.title, a.ctnt, a.r_dt, a.i_user, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE i_board = ? ";
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
@@ -73,11 +86,13 @@ public class BoardDAO {
 					String ctnt = rs.getNString("ctnt");
 					String r_dt = rs.getNString("r_dt");
 					String u_nm = rs.getNString("u_nm");
+					int i_user = rs.getInt("i_user");
 					
 					vo.setTitle(title);
 					vo.setCtnt(ctnt);
 					vo.setR_dt(r_dt);
 					vo.setU_nm(u_nm);
+					vo.setI_user(i_user);
 					vo.setI_board(param.getI_board());
 					result++;
 				}
@@ -85,6 +100,16 @@ public class BoardDAO {
 			}
 		});
 		return vo;
+	}
+	
+	public static int delDetail(BoardVO param) {
+		String sql = " DELETE FROM t_board4 WHERE i_board = ? ";
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_board());
+			}
+		});
 	}
 
 }

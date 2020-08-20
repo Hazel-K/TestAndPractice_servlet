@@ -40,6 +40,7 @@ public class UserDAO {
 				if (rs.next()) {
 					param.setUser_nm(rs.getNString("u_nm"));
 					param.setI_user(rs.getInt("i_user"));
+//					System.out.println("dd : " + param.getI_user());
 					String pw = rs.getNString("u_pw");
 //					System.out.println(pw);
 					String mypw = param.getUser_pw();

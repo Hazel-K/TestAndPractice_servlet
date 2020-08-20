@@ -44,5 +44,13 @@ public class Utils {
 		}
 		return result;
 	}
+	
+	public static int parseStringToInt(String n1, int n2) {
+		try {
+			return Integer.parseInt(n1);
+		} catch (Exception e) {
+			return n2;
+		}
+	}
 
 }

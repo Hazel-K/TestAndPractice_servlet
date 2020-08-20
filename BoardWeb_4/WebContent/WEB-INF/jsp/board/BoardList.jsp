@@ -9,6 +9,12 @@
 <head>
 <meta charset="UTF-8">
 <title>게시판</title>
+	<style>
+		span {
+			cursor: pointer;
+			margin-right: 10px;
+		}
+	</style>
 </head>
 <body>
 	<div>${login_user.getUser_nm()}님 환영합니다.</div>
