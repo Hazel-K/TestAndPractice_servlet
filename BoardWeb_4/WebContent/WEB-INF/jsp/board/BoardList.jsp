@@ -18,7 +18,7 @@
 </head>
 <body>
 	<div>${login_user.getUser_nm()}님 환영합니다.</div>
-	<div><span onclick="location.href='regmod'">글쓰기</span><span onclick="location.href='login'">로그아웃</span></div>
+	<div><span onclick="location.href='regmod'">글쓰기</span><span onclick="location.href='logout'">로그아웃</span></div>
 	<h1>게시판</h1>
 	<table>
 		<tr>

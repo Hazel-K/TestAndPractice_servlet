@@ -2,15 +2,18 @@ package blog.hyojin4588.pjt.board;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import blog.hyojin4588.pjt.Const;
 import blog.hyojin4588.pjt.ViewResolver;
 import blog.hyojin4588.pjt.db.BoardDAO;
 import blog.hyojin4588.pjt.vo.BoardVO;
+import blog.hyojin4588.pjt.vo.UserVO;
 
 @WebServlet("/detail")
 public class BoardDetailSER extends HttpServlet {
@@ -22,10 +25,18 @@ public class BoardDetailSER extends HttpServlet {
 		BoardVO param = new BoardVO();
 		param.setI_board(i_board);
 		BoardVO vo = BoardDAO.selDetail(param);
+		
+		ServletContext application = getServletContext();
+		Integer readI_user = (Integer)application.getAttribute("read_" + strI_board); // Integer는 null 들어감
+		UserVO temp = (UserVO)(request.getSession().getAttribute(Const.LOGIN_USER));
+		int getI_user = temp.getI_user();
+		
+		if(readI_user == null || readI_user != getI_user) {
+			BoardDAO.updateHits(vo);
+			application.setAttribute("read_" + strI_board, getI_user);
+		}
+		
 		request.setAttribute("data", vo);
-//		System.out.println(vo.getI_user());
-//		UserVO vo2 = (UserVO)request.getSession().getAttribute(Const.LOGIN_USER);
-//		System.out.println(vo2.getI_user());
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 

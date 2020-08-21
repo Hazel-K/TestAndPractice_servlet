@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import blog.hyojin4588.pjt.Const;
+import blog.hyojin4588.pjt.Utils;
 import blog.hyojin4588.pjt.ViewResolver;
 import blog.hyojin4588.pjt.db.BoardDAO;
 import blog.hyojin4588.pjt.vo.BoardVO;
@@ -24,8 +25,8 @@ public class RegModSER extends HttpServlet {
 //		System.out.println(strI_board);
 		BoardVO vo = null;
 		String titleMsg = "";
-		if(strI_board != null) {
-			int i_board = Integer.parseInt(strI_board);
+		if(strI_board != null && !(strI_board.equals(""))) {
+			int i_board = Utils.parseStringToInt(strI_board);
 			BoardVO param = new BoardVO();
 			param.setI_board(i_board);
 			vo = BoardDAO.selDetail(param);
@@ -51,9 +52,9 @@ public class RegModSER extends HttpServlet {
 		
 		BoardVO param = new BoardVO();
 		String strI_board = request.getParameter("i_board");
-
-		if(strI_board != null) {
-			param.setI_board(Integer.parseInt(strI_board));
+		
+		if(!(strI_board.equals(""))) {
+			param.setI_board(Utils.parseStringToInt(strI_board));
 		}
 		param.setTitle(title);
 		param.setCtnt(ctnt);
@@ -61,10 +62,11 @@ public class RegModSER extends HttpServlet {
 		
 		int result = 0;
 		
-		if(strI_board != null) {
+		if(!(strI_board.equals(""))) {
 			result = BoardDAO.modDetail(param);
 		} else {
 			result = BoardDAO.insDetail(param);
+//			System.out.println(result);
 		}
 		
 		if (result != 1) {
@@ -73,8 +75,8 @@ public class RegModSER extends HttpServlet {
 			return;
 		}
 		
-		if(strI_board != null) {
-			response.sendRedirect("detail?i_board=" + Integer.parseInt(strI_board));
+		if(!(strI_board.equals(""))) {
+			response.sendRedirect("detail?i_board=" + Utils.parseStringToInt(strI_board));
 			return;
 		} else {
 			response.sendRedirect("boardlist");

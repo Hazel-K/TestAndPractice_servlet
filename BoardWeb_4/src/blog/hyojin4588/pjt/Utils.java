@@ -45,11 +45,15 @@ public class Utils {
 		return result;
 	}
 	
-	public static int parseStringToInt(String n1, int n2) {
+	public static int parseStringToInt(String arg0) {
+		return parseStringToInt(arg0, 0);
+	}
+	
+	public static int parseStringToInt(String arg0, int arg1) {
 		try {
-			return Integer.parseInt(n1);
+			return Integer.parseInt(arg0);
 		} catch (Exception e) {
-			return n2;
+			return arg1;
 		}
 	}
 
