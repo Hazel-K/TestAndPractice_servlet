@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import blog.hyojin4588.pjt.Const;
+import blog.hyojin4588.pjt.Utils;
 import blog.hyojin4588.pjt.ViewResolver;
 import blog.hyojin4588.pjt.db.BoardDAO;
 import blog.hyojin4588.pjt.vo.BoardVO;
+import blog.hyojin4588.pjt.vo.UserLikeVO;
 import blog.hyojin4588.pjt.vo.UserVO;
 
 @WebServlet("/detail")
@@ -36,12 +38,41 @@ public class BoardDetailSER extends HttpServlet {
 			application.setAttribute("read_" + strI_board, getI_user);
 		}
 		
+		UserLikeVO param2 = new UserLikeVO();
+		param2.setI_board(i_board);
+		param2.setI_user(getI_user);
+		int result = BoardDAO.selLike(param2);
+		
+		request.setAttribute("like", result);
 		request.setAttribute("data", vo);
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		doGet(request, response);
+		Utils.isLogout(request, response);
+		UserVO userInfo = Utils.userInfo(request, response);
+		int i_user = userInfo.getI_user();
+		String strI_board = request.getParameter("i_board");
+		int i_board = Utils.parseStringToInt(strI_board);
+		
+//		System.out.println("i_user "+i_user);
+//		System.out.println("i_board "+i_board);
+		
+		UserLikeVO param = new UserLikeVO();
+		param.setI_board(i_board);
+		param.setI_user(i_user);
+		
+		BoardDAO.selLike(param);
+		
+//		System.out.println("like "+param.getLike());
+		
+		if(param.getLike() == 0) {
+			BoardDAO.insLike(param);
+		} else {
+			BoardDAO.delLike(param);
+		}
+		
+		doGet(request, response); 
 	}
 
 }

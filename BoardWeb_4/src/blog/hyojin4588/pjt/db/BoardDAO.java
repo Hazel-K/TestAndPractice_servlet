@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blog.hyojin4588.pjt.vo.BoardVO;
+import blog.hyojin4588.pjt.vo.UserLikeVO;
 
 public class BoardDAO {
+	
 	public static int insDetail(BoardVO param) {
 		String sql = " INSERT INTO t_board4(i_board, title, ctnt, i_user) SELECT seq_board.nextval, ?, ?, ? FROM DUAL ";
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
@@ -124,6 +126,49 @@ public class BoardDAO {
 			public void update(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, param.getI_board());
 				ps.setInt(2, param.getI_user());
+			}
+		});
+	}
+	
+	public static int selLike(UserLikeVO param) {
+		String sql = " SELECT a.*, c.u_nm, DECODE(b.i_user, null, 0, 1) as yn_like FROM t_board4 a LEFT JOIN t_board4_like b ON a.i_board = b.i_board And b.i_user = ? INNER JOIN t_user c ON a.i_user = c.i_user where a.i_board = ? ";
+		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_user());
+				ps.setInt(2, param.getI_board());
+			}
+			
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				int like = 0;
+				if(rs.next()) {
+					like = rs.getInt("yn_like");
+					param.setLike(like);
+				}
+				return like;
+			}
+		});
+	}
+	
+	public static int insLike(UserLikeVO param) {
+		String sql = " INSERT INTO t_board4_like(i_user, i_board) SELECT ?, ? FROM DUAL ";
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_user());
+				ps.setInt(2, param.getI_board());
+			}
+		});
+	}
+	
+	public static int delLike(UserLikeVO param) {
+		String sql = " DELETE FROM t_board4_like WHERE i_user = ? AND i_board = ? ";
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_user());
+				ps.setInt(2, param.getI_board());
 			}
 		});
 	}

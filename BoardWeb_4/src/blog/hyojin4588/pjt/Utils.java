@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import blog.hyojin4588.pjt.vo.UserVO;
+
 public class Utils {
 	
 	public static String encryptString(String str) {
@@ -55,6 +57,16 @@ public class Utils {
 		} catch (Exception e) {
 			return arg1;
 		}
+	}
+	
+	public static UserVO userInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpSession hs = request.getSession();
+		UserVO vo = (UserVO)hs.getAttribute(Const.LOGIN_USER);
+		if(null != vo) {
+			return vo;			
+		}
+		response.sendRedirect("login");
+		return vo;
 	}
 
 }
