@@ -1,6 +1,7 @@
 package blog.hyojin4588.pjt.board;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -12,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import blog.hyojin4588.pjt.Const;
 import blog.hyojin4588.pjt.Utils;
 import blog.hyojin4588.pjt.ViewResolver;
+import blog.hyojin4588.pjt.db.BoardCmtDAO;
 import blog.hyojin4588.pjt.db.BoardDAO;
+import blog.hyojin4588.pjt.vo.BoardCmtVO;
 import blog.hyojin4588.pjt.vo.BoardVO;
 import blog.hyojin4588.pjt.vo.UserLikeVO;
 import blog.hyojin4588.pjt.vo.UserVO;
@@ -45,6 +48,13 @@ public class BoardDetailSER extends HttpServlet {
 		
 		request.setAttribute("like", result);
 		request.setAttribute("data", vo);
+		
+		BoardCmtVO param3 = new BoardCmtVO();
+		param3.setI_board(i_board);
+		List<BoardCmtVO> list = BoardCmtDAO.selCmt(param3);
+		request.setAttribute("list", list);
+		request.setAttribute("msg1", "수정");
+		request.setAttribute("msg2", "등록");
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 
@@ -72,7 +82,7 @@ public class BoardDetailSER extends HttpServlet {
 			BoardDAO.delLike(param);
 		}
 		
-		doGet(request, response); 
+		doGet(request, response);
 	}
 
 }

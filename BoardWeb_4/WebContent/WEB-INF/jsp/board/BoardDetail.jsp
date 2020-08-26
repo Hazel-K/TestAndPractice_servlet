@@ -28,14 +28,39 @@
 	<input type="hidden" name="i_board" value="${data.i_board}">
 	<span onclick="likeFrm.submit()">좋아요
 	<c:if test="${like == 1}">
-		<span class="material-icons" style="color: red;">favorite</span>
+		<span class="material-icons" style="color: pink;">favorite</span>
 	</c:if>
 	<c:if test="${like == 0}">
-		<span class="material-icons" style="color: red;">favorite_border</span>
+		<span class="material-icons" style="color: pink;">favorite_border</span>
 	</c:if>
 	</span>
 </form>
     <span class="gotolist" onclick="location.href='boardlist'">리스트로</span>
+</div>
+<div>
+<form id="cmtFrm" action="coment" method="post">
+	<input type="hidden" name="i_cmt" value="0">
+	<input type="hidden" name="i_board" value="${data.i_board}">
+	<div>
+	<input type="text" name="cmt" value="${item.cmt}" placeholder="댓글">
+	<span onclick="cmtFrm.submit()">${ null == item.cmt ? msg2 : msg1 }</span>
+	</div>
+</form>
+</div>
+<div>
+	<table>
+	<c:forEach items="${list}" var="item">
+		<tr>
+			<td>${item.u_nm}</td>
+			<td>${item.cmt}</td>
+			<td>${item.r_dt}</td>
+			<c:if test="${login_user.i_user == item.i_user}">
+			<td onclick="">수정</td>
+			<td onclick="location.href='coment?i_cmt=${item.i_cmt}&i_board=${item.i_board}'">삭제</td>
+			</c:if>
+		</tr>
+	</c:forEach>
+	</table>
 </div>
 </body>
 </html>

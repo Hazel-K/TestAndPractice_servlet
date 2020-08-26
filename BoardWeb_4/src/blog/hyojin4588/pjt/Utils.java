@@ -47,6 +47,10 @@ public class Utils {
 		return result;
 	}
 	
+	public static int getIntParameter(HttpServletRequest request, String keyNm) throws IOException {
+		return parseStringToInt(request.getParameter(keyNm));
+	}
+	
 	public static int parseStringToInt(String arg0) {
 		return parseStringToInt(arg0, 0);
 	}
