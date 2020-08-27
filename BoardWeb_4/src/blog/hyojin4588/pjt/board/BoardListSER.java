@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import blog.hyojin4588.pjt.Const;
+import blog.hyojin4588.pjt.Utils;
 import blog.hyojin4588.pjt.ViewResolver;
 import blog.hyojin4588.pjt.db.BoardDAO;
-import blog.hyojin4588.pjt.vo.BoardVO;
+import blog.hyojin4588.pjt.vo.PageVO;
 
 @WebServlet("/boardlist")
 public class BoardListSER extends HttpServlet {
@@ -25,8 +26,25 @@ public class BoardListSER extends HttpServlet {
 			response.sendRedirect("login");
 			return;
 		}
-		List<BoardVO> list = BoardDAO.selBoard();
-		request.setAttribute("data", list);
+		
+//		List<BoardVO> list = BoardDAO.selBoard();
+//		request.setAttribute("data", list);
+		
+		int page = Utils.getIntParameter(request, "page");
+		page = page == 0 ? 1 : page;
+		
+		PageVO param2 = new PageVO();
+		param2.setPage(page);
+		param2.setRecordCnt(Const.BOARD_CNT);
+		
+//		System.out.println(param2.getPage());
+//		System.out.println(param2.getRecordCnt());
+		List<PageVO> list2 = BoardDAO.selPaging(param2);
+//		System.out.println(list2.size());
+		
+		request.setAttribute("page", BoardDAO.selpagingCnt(param2));
+		request.setAttribute("showPage", list2);
+		request.setAttribute("currentPage", page);
 		
 		ViewResolver.forward("board/BoardList", request, response);
 	}

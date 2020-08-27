@@ -42,8 +42,9 @@
 	<input type="hidden" name="i_cmt" value="0">
 	<input type="hidden" name="i_board" value="${data.i_board}">
 	<div>
-	<input type="text" name="cmt" value="${item.cmt}" placeholder="댓글">
-	<span onclick="cmtFrm.submit()">${ null == item.cmt ? msg2 : msg1 }</span>
+	<input type="text" name="cmt" value="" placeholder="댓글">
+	<span id="cmtbtnsubmit" onclick="cmtFrm.submit()">전송</span>
+	<span id="" onclick="cancelCmt()">취소</span>
 	</div>
 </form>
 </div>
@@ -55,12 +56,25 @@
 			<td>${item.cmt}</td>
 			<td>${item.r_dt}</td>
 			<c:if test="${login_user.i_user == item.i_user}">
-			<td onclick="">수정</td>
+			<td onclick="clkCmtMod(${item.i_cmt}, '${item.cmt}')">수정</td>
 			<td onclick="location.href='coment?i_cmt=${item.i_cmt}&i_board=${item.i_board}'">삭제</td>
 			</c:if>
 		</tr>
 	</c:forEach>
 	</table>
 </div>
+<script>
+	function cancelCmt() {
+		cmtFrm.i_cmt.value = 0;
+		cmtFrm.cmt.value = '';
+		cmtbtnsubmit.innerText = '전송';
+	}
+	
+	function clkCmtMod(i_cmt, cmt) {
+		cmtFrm.i_cmt.value = i_cmt;
+		cmtFrm.cmt.value = cmt;
+		cmtbtnsubmit.innerText = '수정';
+	}
+</script>
 </body>
 </html>

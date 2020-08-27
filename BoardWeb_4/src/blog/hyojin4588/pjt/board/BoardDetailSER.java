@@ -53,8 +53,8 @@ public class BoardDetailSER extends HttpServlet {
 		param3.setI_board(i_board);
 		List<BoardCmtVO> list = BoardCmtDAO.selCmt(param3);
 		request.setAttribute("list", list);
-		request.setAttribute("msg1", "수정");
-		request.setAttribute("msg2", "등록");
+//		request.setAttribute("msg1", "수정");
+//		request.setAttribute("msg2", "등록");
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 

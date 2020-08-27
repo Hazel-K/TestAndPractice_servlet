@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blog.hyojin4588.pjt.vo.BoardVO;
+import blog.hyojin4588.pjt.vo.PageVO;
 import blog.hyojin4588.pjt.vo.UserLikeVO;
 
 public class BoardDAO {
@@ -171,6 +172,66 @@ public class BoardDAO {
 				ps.setInt(2, param.getI_board());
 			}
 		});
+	}
+	
+	public static int selpagingCnt(PageVO param) {
+		String sql = " SELECT (COUNT(i_board) / ?) as pagingCnt FROM t_board4 ";
+		
+		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getRecordCnt());
+			}
+			
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				if(rs.next()) {
+					return rs.getInt("pagingCnt") + 1;
+				}
+				return 0;
+			}
+		});
+	}
+	
+	public static List<PageVO> selPaging(PageVO param) {
+		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
+		List<PageVO> list = new ArrayList<PageVO>();
+		
+		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				int maxCnt = param.getPage() * param.getRecordCnt();
+				int minCnt = maxCnt - param.getRecordCnt();
+				ps.setInt(1, maxCnt);
+				ps.setInt(2, minCnt);
+			}
+			
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				int result = 0;
+				while(rs.next()) {
+					PageVO vo = new PageVO();
+					int i_board = rs.getInt("i_board");
+					int i_user = rs.getInt("i_user");
+					String title = rs.getNString("title");
+					int hits = rs.getInt("hits");
+					String r_dt = rs.getNString("r_dt");
+					String u_nm = rs.getNString("u_nm");
+					
+					vo.setI_board(i_board);
+					vo.setI_user(i_user);
+					vo.setTitle(title);
+					vo.setHits(hits);
+					vo.setR_dt(r_dt);
+					vo.setU_nm(u_nm);
+					
+					list.add(vo);
+					result++;
+				}
+				return result;
+			}
+		});
+		return list;
 	}
 
 }

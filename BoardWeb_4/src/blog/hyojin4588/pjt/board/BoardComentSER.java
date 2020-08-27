@@ -46,7 +46,7 @@ public class BoardComentSER extends HttpServlet {
 		int result = 0;
 		
 		BoardCmtVO param = new BoardCmtVO();
-//		param.setI_cmt(i_cmt);
+		param.setI_cmt(i_cmt);
 		param.setI_board(i_board);
 		param.setCmt(cmt);
 		param.setI_user(i_user);
@@ -55,7 +55,7 @@ public class BoardComentSER extends HttpServlet {
 			case "0":
 				result = BoardCmtDAO.insCmt(param);
 				break;
-			case "1":
+			default:
 				result = BoardCmtDAO.updCmt(param);
 				break;
 		}

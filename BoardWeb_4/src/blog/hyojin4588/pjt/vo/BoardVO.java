@@ -9,7 +9,7 @@ public class BoardVO {
 	private String r_dt;
 	private String m_dt;
 	private String u_nm; 
-	
+	private int boardCnt;
 	
 	public String getU_nm() {
 		return u_nm;
@@ -59,4 +59,11 @@ public class BoardVO {
 	public void setM_dt(String m_dt) {
 		this.m_dt = m_dt;
 	}
+	public int getBoardCnt() {
+		return boardCnt;
+	}
+	public void setBoardCnt(int boardCnt) {
+		this.boardCnt = boardCnt;
+	}
+	
 }

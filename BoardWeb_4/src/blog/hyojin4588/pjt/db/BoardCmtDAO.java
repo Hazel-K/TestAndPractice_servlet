@@ -53,7 +53,15 @@ public class BoardCmtDAO {
 	}
 
 	public static int updCmt(BoardCmtVO param) {
-		return 0;
+		String sql = " UPDATE t_board4_cmt SET cmt = ? WHERE i_cmt = ? and i_user = ? ";
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setNString(1, param.getCmt());
+				ps.setInt(2, param.getI_cmt());
+				ps.setInt(3, param.getI_user());
+			}
+		});
 	}
 
 	public static int delCmt(BoardCmtVO param) {
