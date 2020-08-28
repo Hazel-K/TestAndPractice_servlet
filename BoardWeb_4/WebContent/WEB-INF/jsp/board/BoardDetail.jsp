@@ -13,7 +13,10 @@
 </head>
 <body>
 <div>${data.title}</div>
-<div>${data.u_nm}</div>
+<div>
+<span><img alt="" src="${data.profile_img == null ? '' : data.profile_img}"></span>
+<span>${data.u_nm}</span>
+</div>
 <div>${data.r_dt}</div>
 <div>${data.ctnt}</div>
 <div>
@@ -25,6 +28,9 @@
     <span class="mod" onclick="location.href='regmod?i_board=' + ${data.i_board}">수정</span>
 </c:if>
 <form id="likeFrm" action="detail" method="post">
+	<input type="hidden" name="page" value="${param.page}">
+	<input type="hidden" name="record_cnt" value="${param.record_cnt}">
+	<input type="hidden" name="searchText" value="${param.searchText}">
 	<input type="hidden" name="i_board" value="${data.i_board}">
 	<span onclick="likeFrm.submit()">좋아요
 	<c:if test="${like == 1}">
@@ -35,7 +41,7 @@
 	</c:if>
 	</span>
 </form>
-    <span class="gotolist" onclick="location.href='boardlist'">리스트로</span>
+    <span class="gotolist" onclick="location.href='boardlist?page=${page}&record_cnt=${record_cnt}&searchText=${param.searchText}'">리스트로</span>
 </div>
 <div>
 <form id="cmtFrm" action="coment" method="post">

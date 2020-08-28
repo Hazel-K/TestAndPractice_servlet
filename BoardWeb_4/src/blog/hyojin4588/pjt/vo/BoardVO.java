@@ -8,8 +8,10 @@ public class BoardVO {
 	private int i_user;
 	private String r_dt;
 	private String m_dt;
-	private String u_nm; 
+	private String u_nm;
+	private String profile_img;
 	private int boardCnt;
+	private String searchText;
 	
 	public String getU_nm() {
 		return u_nm;
@@ -64,6 +66,18 @@ public class BoardVO {
 	}
 	public void setBoardCnt(int boardCnt) {
 		this.boardCnt = boardCnt;
+	}
+	public String getProfile_img() {
+		return profile_img;
+	}
+	public void setProfile_img(String profile_img) {
+		this.profile_img = profile_img;
+	}
+	public String getSearchText() {
+		return searchText;
+	}
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
 	}
 	
 }

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import blog.hyojin4588.pjt.Const;
 import blog.hyojin4588.pjt.Utils;
@@ -55,6 +56,16 @@ public class BoardDetailSER extends HttpServlet {
 		request.setAttribute("list", list);
 //		request.setAttribute("msg1", "수정");
 //		request.setAttribute("msg2", "등록");
+		
+		HttpSession hs = request.getSession();
+		Integer page = (Integer)hs.getAttribute("recentPage");
+		Integer record_cnt = (Integer)hs.getAttribute("recentRecordCnt");
+//		System.out.println("세션 저장 후의 레코드:" + record_cnt);
+//		System.out.println("세션 저장 후의 페이지:" + page);
+		
+		request.setAttribute("page", page);
+		request.setAttribute("record_cnt", record_cnt);
+		
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 

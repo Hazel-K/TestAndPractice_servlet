@@ -87,7 +87,7 @@ public class BoardDAO {
 	
 	public static BoardVO selDetail(BoardVO param) {
 		BoardVO vo = new BoardVO();
-		String sql = " SELECT a.title, a.ctnt, a.r_dt, a.i_user, a.hits, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE i_board = ? ";
+		String sql = " SELECT a.title, a.ctnt, a.r_dt, a.i_user, a.hits, b.u_nm, b.profile_img FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE i_board = ? ";
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
@@ -102,6 +102,7 @@ public class BoardDAO {
 					String ctnt = rs.getNString("ctnt");
 					String r_dt = rs.getNString("r_dt");
 					String u_nm = rs.getNString("u_nm");
+					String profile_img = rs.getNString("profile_img");
 					int i_user = rs.getInt("i_user");
 					int hits = rs.getInt("hits");
 					
@@ -109,6 +110,7 @@ public class BoardDAO {
 					vo.setCtnt(ctnt);
 					vo.setR_dt(r_dt);
 					vo.setU_nm(u_nm);
+					vo.setProfile_img(profile_img);
 					vo.setI_user(i_user);
 					vo.setHits(hits);
 					vo.setI_board(param.getI_board());
@@ -175,12 +177,13 @@ public class BoardDAO {
 	}
 	
 	public static int selpagingCnt(PageVO param) {
-		String sql = " SELECT (COUNT(i_board) / ?) as pagingCnt FROM t_board4 ";
+		String sql = " SELECT (COUNT(i_board) / ?) as pagingCnt FROM t_board4 WHERE title LIKE ? ";
 		
 		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, param.getRecordCnt());
+				ps.setNString(2, param.getSearchText());
 			}
 			
 			@Override
@@ -194,7 +197,7 @@ public class BoardDAO {
 	}
 	
 	public static List<PageVO> selPaging(PageVO param) {
-		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
+		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE a.title LIKE ? ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
 		List<PageVO> list = new ArrayList<PageVO>();
 		
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
@@ -202,8 +205,9 @@ public class BoardDAO {
 			public void prepared(PreparedStatement ps) throws SQLException {
 				int maxCnt = param.getPage() * param.getRecordCnt();
 				int minCnt = maxCnt - param.getRecordCnt();
-				ps.setInt(1, maxCnt);
-				ps.setInt(2, minCnt);
+				ps.setNString(1, param.getSearchText());
+				ps.setInt(2, maxCnt);
+				ps.setInt(3, minCnt);
 			}
 			
 			@Override

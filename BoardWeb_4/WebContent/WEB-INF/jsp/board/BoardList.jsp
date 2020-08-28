@@ -18,9 +18,10 @@ span {
 </head>
 <body>
 	<div>${login_user.getUser_nm()}님환영합니다.</div>
+	<span onclick="location.href='profile'">프로필</span>
 	<div>
-		<span onclick="location.href='regmod'">글쓰기</span><span
-			onclick="location.href='logout'">로그아웃</span>
+		<span onclick="location.href='regmod'">글쓰기</span>
+		<span onclick="location.href='logout'">로그아웃</span>
 	</div>
 	<h1>게시판</h1>
 	<table>
@@ -37,7 +38,8 @@ span {
 			</tr>
 		</c:if>
 		<c:forEach items="${showPage}" var="item">
-			<tr onclick="location.href='detail?i_board=${item.i_board}'">
+			<tr
+				onclick="location.href='detail?i_board=${item.i_board}&searchText=${param.searchText}'">
 				<td>${item.i_board}</td>
 				<td>${item.u_nm}</td>
 				<td>${item.title}</td>
@@ -52,21 +54,33 @@ span {
 				<span style="color: red;">${cnt}</span>
 			</c:if>
 			<c:if test="${cnt != currentPage}">
-				<span onclick="location.href='boardlist?page=${cnt}'">${cnt}</span>
+				<span
+					onclick="location.href='boardlist?page=${cnt == null ? 1 : cnt}&record_cnt=${param.record_cnt == null ? 5 : param.record_cnt}&searchText=${param.searchText}'">${cnt}</span>
 			</c:if>
 		</c:forEach>
 	</div>
 	<div>
-		<form action="/boardlist?page=${page}">
-			레코드 수 <select id="select1" onchange="changeRecordCnt()'">
-				<c:forEach begin="10" end="30" step="10" var="item">
+		<form action="/boardlist" method="get" id="selFrm">
+			<input type="hidden" name="page" value="1">
+			<input type="hidden" name="searchText" value="${param.searchText}">
+			레코드 수 <select name="record_cnt" onchange="selFrm.submit()">
+				<c:forEach begin="5" end="15" step="5" var="item">
 					<c:choose>
-						<c:when test="${para.record_cnt == item || (param.record_cnt == null && item == 10)}">
+						<c:when test="${param.record_cnt == item}">
 							<option value="${item}" selected>${item}개</option>
 						</c:when>
+						<c:otherwise>
+							<option value="${item}">${item}개</option>
+						</c:otherwise>
 					</c:choose>
 				</c:forEach>
 			</select>
+		</form>
+	</div>
+	<div>
+		<form action="/boardlist" id="searchFrm" method="get">
+			<input type="search" name="searchText" value="${param.searchText}">
+			<span onclick="searchFrm.submit()">검색</span>
 		</form>
 	</div>
 </body>

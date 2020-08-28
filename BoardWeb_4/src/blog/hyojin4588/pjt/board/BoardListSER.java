@@ -27,15 +27,32 @@ public class BoardListSER extends HttpServlet {
 			return;
 		}
 		
+		String searchText = request.getParameter("searchText");
+		if(searchText == null) {
+			searchText = "";
+		}
+		
+//		System.out.println(searchText);
+				
 //		List<BoardVO> list = BoardDAO.selBoard();
 //		request.setAttribute("data", list);
 		
 		int page = Utils.getIntParameter(request, "page");
+		int recordCnt = Utils.getIntParameter(request, "record_cnt");
 		page = page == 0 ? 1 : page;
+		recordCnt = recordCnt == 0 ? 5 : recordCnt;
+		
+		Integer recentRecordCnt = (Integer)hs.getAttribute("recentRecordCnt");
+		if(recentRecordCnt != null && recordCnt == recentRecordCnt) {
+			recordCnt = recentRecordCnt;
+		}
 		
 		PageVO param2 = new PageVO();
 		param2.setPage(page);
-		param2.setRecordCnt(Const.BOARD_CNT);
+		param2.setRecordCnt(recordCnt);
+		param2.setSearchText("%" + searchText + "%");
+//		System.out.println(page);
+//		System.out.println(recordCnt);
 		
 //		System.out.println(param2.getPage());
 //		System.out.println(param2.getRecordCnt());
@@ -45,6 +62,11 @@ public class BoardListSER extends HttpServlet {
 		request.setAttribute("page", BoardDAO.selpagingCnt(param2));
 		request.setAttribute("showPage", list2);
 		request.setAttribute("currentPage", page);
+		
+		hs.setAttribute("recentRecordCnt", recordCnt);
+		hs.setAttribute("recentPage", page);
+//		System.out.println("세션 저장 직전의 레코드:" + recordCnt);
+//		System.out.println("세션 저장 직전의 페이지:" + page);
 		
 		ViewResolver.forward("board/BoardList", request, response);
 	}
