@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import blog.hyojin4588.pjt.vo.UserLoginHistoryVO;
 import blog.hyojin4588.pjt.vo.UserVO;
+import javafx.beans.binding.StringBinding;
 
 public class UserDAO {
 	
@@ -94,5 +95,36 @@ public class UserDAO {
 			}
 		});
 		return result;			
+	}
+	
+	public static int updUser(UserVO param) {
+		StringBuilder sb = new StringBuilder(" UPDATE t_user SET m_dt = sysdate"); // 퍼포먼스 때문에 사용. 반복문시 필수
+		if(param.getUser_pw() != null) {
+			sb.append(" , u_pw = '");
+			sb.append(param.getUser_pw());
+			sb.append("'");
+		}
+		if(param.getUser_nm() != null) {
+			sb.append(" , u_nm = '");
+			sb.append(param.getUser_nm());
+			sb.append("'");
+		}
+		if(param.getEmail() != null) {
+			sb.append(" , email = '");
+			sb.append(param.getEmail());
+			sb.append("'");
+		}
+		if(param.getProfile_img() != null) {
+			sb.append(" , profile_img = '");
+			sb.append(param.getProfile_img());
+			sb.append("'");
+		}
+		sb.append(" WHERE i_user = ");
+		sb.append(param.getI_user());
+		
+		return JdbcTemplate.executeUpdate(sb.toString(), new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {}
+		});
 	}
 }
