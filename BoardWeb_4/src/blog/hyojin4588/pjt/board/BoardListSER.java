@@ -48,6 +48,7 @@ public class BoardListSER extends HttpServlet {
 		}
 		
 		PageVO param2 = new PageVO();
+		param2.setI_user(Utils.userInfo(request, response).getI_user());
 		param2.setPage(page);
 		param2.setRecordCnt(recordCnt);
 		param2.setSearchText("%" + searchText + "%");

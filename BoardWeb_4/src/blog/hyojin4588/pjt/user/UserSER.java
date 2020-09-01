@@ -42,18 +42,19 @@ public class UserSER extends HttpServlet {
 		String fileNm = "";
 		String saveFileNm = null;
 //		String originFileNm = "";
-		
+
 		File directory = new File(savePath);
-		if(!directory.exists()) {
+		if (!directory.exists()) {
 			directory.mkdirs();
 		}
 
 		try {
-			MultipartRequest mr = new MultipartRequest(request, savePath, maxFileSize, "UTF-8", new DefaultFileRenamePolicy());
+			MultipartRequest mr = new MultipartRequest(request, savePath, maxFileSize, "UTF-8",
+					new DefaultFileRenamePolicy());
 			Enumeration files = mr.getFileNames();
 
 			if (files.hasMoreElements()) {
-				String key = (String)files.nextElement();
+				String key = (String) files.nextElement();
 				fileNm = mr.getFilesystemName(key);
 //				originFileNm = mr.getOriginalFileName(key); // 원본 파일 이름 가져오기
 //				System.out.println("key : " + key);
@@ -70,16 +71,16 @@ public class UserSER extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		if(saveFileNm != null) {
+
+		if (saveFileNm != null) {
 			UserVO param = new UserVO();
 			param.setProfile_img(saveFileNm);
 			param.setI_user(loginUser.getI_user()); // id를 쓰지 않는 이유는 속도가 정수가 더 빨라서
-			
+
 			int result = UserDAO.updUser(param);
 //			System.out.println(result + "개 유저 업데이트 완료");
 		}
-		
+
 		response.sendRedirect("profile");
 	}
 

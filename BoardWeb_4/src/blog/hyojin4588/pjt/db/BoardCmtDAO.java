@@ -12,7 +12,7 @@ public class BoardCmtDAO {
 	
 	public static List<BoardCmtVO> selCmt(BoardCmtVO param) {
 		List<BoardCmtVO> list = new ArrayList<BoardCmtVO>();
-		String sql = " SELECT a.i_user, b.u_nm, a.cmt, a.r_dt, a.i_cmt, a.i_board FROM t_board4_cmt a INNER JOIN t_user b ON a.i_user = b.i_user WHERE a.i_board = ? ";
+		String sql = " SELECT a.i_user, b.profile_img ,b.u_nm, a.cmt, a.r_dt, a.i_cmt, a.i_board FROM t_board4_cmt a INNER JOIN t_user b ON a.i_user = b.i_user WHERE a.i_board = ? ";
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
@@ -31,6 +31,7 @@ public class BoardCmtDAO {
 					vo.setR_dt(rs.getNString("r_dt"));
 					vo.setI_cmt(rs.getInt("i_cmt"));
 					vo.setI_board(rs.getInt("i_board"));
+					vo.setProfile_img(rs.getNString("profile_img"));
 					list.add(vo);
 					result++;
 				}

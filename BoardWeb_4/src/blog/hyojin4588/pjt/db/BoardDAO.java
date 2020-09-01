@@ -197,7 +197,8 @@ public class BoardDAO {
 	}
 	
 	public static List<PageVO> selPaging(PageVO param) {
-		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE a.title LIKE ? ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
+//		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT b.profile_img, a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user WHERE a.title LIKE ? ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
+		String sql = " SELECT a.* FROM (SELECT ROWNUM as RNUM, a.* FROM (SELECT b.profile_img, a.i_board, a.title, a.hits, a.i_user, a.r_dt, b.u_nm, c.like_cnt, c.cmt_cnt, c.my_like, c.my_cmt FROM t_board4 a INNER JOIN t_user b ON a.i_user = b.i_user LEFT JOIN (SELECT A.i_board, A.title, nvl(b.cnt, 0) as like_cnt, nvl(c.cmt, 0) as cmt_cnt, DECODE(d.i_board, null, 0, 1) as my_like, DECODE(e.i_board, null, 0, 1) as my_cmt FROM t_board4 A LEFT JOIN (SELECT i_board, count(i_board) as CNT FROM t_board4_like GROUP BY i_board) B ON A.i_board = B.i_board LEFT JOIN (SELECT i_board, count(i_board) as cmt FROM t_board4_cmt GROUP BY i_board) C ON A.i_board = C.i_board LEFT JOIN (SELECT * FROM t_board4_like WHERE i_user = ?) D ON A.i_board = D.i_board LEFT JOIN (SELECT * FROM t_board4_cmt WHERE i_user = ?)E ON A.i_board = E.i_board) c ON a.i_board = c.i_board WHERE a.title LIKE ? ORDER BY i_board DESC) A WHERE ROWNUM <= ?) A WHERE a.rnum > ? ";
 		List<PageVO> list = new ArrayList<PageVO>();
 		
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
@@ -205,9 +206,12 @@ public class BoardDAO {
 			public void prepared(PreparedStatement ps) throws SQLException {
 				int maxCnt = param.getPage() * param.getRecordCnt();
 				int minCnt = maxCnt - param.getRecordCnt();
-				ps.setNString(1, param.getSearchText());
-				ps.setInt(2, maxCnt);
-				ps.setInt(3, minCnt);
+				int i_user = param.getI_user();
+				ps.setInt(1, i_user);
+				ps.setInt(2, i_user);
+				ps.setNString(3, param.getSearchText());
+				ps.setInt(4, maxCnt);
+				ps.setInt(5, minCnt);
 			}
 			
 			@Override
@@ -221,6 +225,12 @@ public class BoardDAO {
 					int hits = rs.getInt("hits");
 					String r_dt = rs.getNString("r_dt");
 					String u_nm = rs.getNString("u_nm");
+					String profile_img = rs.getNString("profile_img");
+					
+					int like_cnt = rs.getInt("like_cnt");
+					int cmt_cnt = rs.getInt("cmt_cnt");
+					int my_like = rs.getInt("my_like");
+					int my_cmt = rs.getInt("my_cmt");
 					
 					vo.setI_board(i_board);
 					vo.setI_user(i_user);
@@ -228,6 +238,12 @@ public class BoardDAO {
 					vo.setHits(hits);
 					vo.setR_dt(r_dt);
 					vo.setU_nm(u_nm);
+					vo.setProfile_img(profile_img);
+					
+					vo.setLike_cnt(like_cnt);
+					vo.setCmt_cnt(cmt_cnt);
+					vo.setMy_like(my_like);
+					vo.setMy_cmt(my_cmt);
 					
 					list.add(vo);
 					result++;

@@ -20,8 +20,8 @@ span {
 	<div>${login_user.getUser_nm()}님환영합니다.</div>
 	<span onclick="location.href='profile'">프로필</span>
 	<div>
-		<span onclick="location.href='regmod'">글쓰기</span>
-		<span onclick="location.href='logout'">로그아웃</span>
+		<span onclick="location.href='regmod'">글쓰기</span> <span
+			onclick="location.href='logout'">로그아웃</span>
 	</div>
 	<h1>게시판</h1>
 	<table>
@@ -30,6 +30,7 @@ span {
 			<th>작성자</th>
 			<th>제목</th>
 			<th>조회수</th>
+			<th>좋아요</th>
 			<th>게시일</th>
 		</tr>
 		<c:if test="${empty showPage}">
@@ -41,9 +42,24 @@ span {
 			<tr
 				onclick="location.href='detail?i_board=${item.i_board}&searchText=${param.searchText}'">
 				<td>${item.i_board}</td>
-				<td>${item.u_nm}</td>
-				<td>${item.title}</td>
+				<td>
+				<c:choose>
+						<c:when test="${item.profile_img != null}">
+							<img width="30px" height="30px"
+								src="/img/user/${login_user.i_user}/${item.profile_img}">
+							<!-- 세션과 서블릿에 설정한 attribute 사용 -->
+						</c:when>
+						<c:otherwise>
+							<img width="30px" height="3s0px"
+								src="${'/img/default_profile.jpg'}">
+							<!-- web-inf 폴더 안에 있는거 사용 -->
+						</c:otherwise>
+				</c:choose>
+				${item.u_nm}
+				</td>
+				<td>${item.title} &#40;${item.cmt_cnt}&#41;</td>
 				<td>${item.hits}</td>
+				<td>${item.like_cnt}</td>
 				<td>${item.r_dt}</td>
 			</tr>
 		</c:forEach>
@@ -61,8 +77,8 @@ span {
 	</div>
 	<div>
 		<form action="/boardlist" method="get" id="selFrm">
-			<input type="hidden" name="page" value="1">
-			<input type="hidden" name="searchText" value="${param.searchText}">
+			<input type="hidden" name="page" value="1"> <input
+				type="hidden" name="searchText" value="${param.searchText}">
 			레코드 수 <select name="record_cnt" onchange="selFrm.submit()">
 				<c:forEach begin="5" end="15" step="5" var="item">
 					<c:choose>

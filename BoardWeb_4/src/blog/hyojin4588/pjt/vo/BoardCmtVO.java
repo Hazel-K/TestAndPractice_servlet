@@ -5,6 +5,7 @@ public class BoardCmtVO {
 	private int i_cmt;
 	private int i_board;
 	private int i_user;
+	private String profile_img;
 	private String cmt;
 	private String m_dt;
 	private String r_dt;
@@ -51,6 +52,12 @@ public class BoardCmtVO {
 	}
 	public void setU_nm(String u_nm) {
 		this.u_nm = u_nm;
+	}
+	public String getProfile_img() {
+		return profile_img;
+	}
+	public void setProfile_img(String profile_img) {
+		this.profile_img = profile_img;
 	}
 
 }

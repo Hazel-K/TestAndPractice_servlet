@@ -24,75 +24,77 @@ import blog.hyojin4588.pjt.vo.UserVO;
 @WebServlet("/detail")
 public class BoardDetailSER extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String strI_board = request.getParameter("i_board");
 		int i_board = Integer.parseInt(strI_board);
 		BoardVO param = new BoardVO();
 		param.setI_board(i_board);
 		BoardVO vo = BoardDAO.selDetail(param);
-		
+
 		ServletContext application = getServletContext();
-		Integer readI_user = (Integer)application.getAttribute("read_" + strI_board); // Integer는 null 들어감
-		UserVO temp = (UserVO)(request.getSession().getAttribute(Const.LOGIN_USER));
+		Integer readI_user = (Integer) application.getAttribute("read_" + strI_board); // Integer는 null 들어감
+		UserVO temp = (UserVO) (request.getSession().getAttribute(Const.LOGIN_USER));
 		int getI_user = temp.getI_user();
-		
-		if(readI_user == null || readI_user != getI_user) {
+
+		if (readI_user == null || readI_user != getI_user) {
 			BoardDAO.updateHits(vo);
 			application.setAttribute("read_" + strI_board, getI_user);
 		}
-		
+
 		UserLikeVO param2 = new UserLikeVO();
 		param2.setI_board(i_board);
 		param2.setI_user(getI_user);
 		int result = BoardDAO.selLike(param2);
-		
+
 		request.setAttribute("like", result);
 		request.setAttribute("data", vo);
-		
+
 		BoardCmtVO param3 = new BoardCmtVO();
 		param3.setI_board(i_board);
 		List<BoardCmtVO> list = BoardCmtDAO.selCmt(param3);
 		request.setAttribute("list", list);
 //		request.setAttribute("msg1", "수정");
 //		request.setAttribute("msg2", "등록");
-		
+
 		HttpSession hs = request.getSession();
-		Integer page = (Integer)hs.getAttribute("recentPage");
-		Integer record_cnt = (Integer)hs.getAttribute("recentRecordCnt");
+		Integer page = (Integer) hs.getAttribute("recentPage");
+		Integer record_cnt = (Integer) hs.getAttribute("recentRecordCnt");
 //		System.out.println("세션 저장 후의 레코드:" + record_cnt);
 //		System.out.println("세션 저장 후의 페이지:" + page);
-		
+
 		request.setAttribute("page", page);
 		request.setAttribute("record_cnt", record_cnt);
-		
+
 		ViewResolver.forward("board/BoardDetail", request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		Utils.isLogout(request, response);
 		UserVO userInfo = Utils.userInfo(request, response);
 		int i_user = userInfo.getI_user();
 		String strI_board = request.getParameter("i_board");
 		int i_board = Utils.parseStringToInt(strI_board);
-		
+
 //		System.out.println("i_user "+i_user);
 //		System.out.println("i_board "+i_board);
-		
+
 		UserLikeVO param = new UserLikeVO();
 		param.setI_board(i_board);
 		param.setI_user(i_user);
-		
+
 		BoardDAO.selLike(param);
-		
+
 //		System.out.println("like "+param.getLike());
-		
-		if(param.getLike() == 0) {
+
+		if (param.getLike() == 0) {
 			BoardDAO.insLike(param);
 		} else {
 			BoardDAO.delLike(param);
 		}
-		
+
 		doGet(request, response);
 	}
 

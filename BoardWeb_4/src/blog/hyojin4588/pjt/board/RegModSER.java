@@ -48,6 +48,8 @@ public class RegModSER extends HttpServlet {
 		UserVO vo = (UserVO)hs.getAttribute(Const.LOGIN_USER);
 		String title = request.getParameter("title");
 		String ctnt = request.getParameter("ctnt");
+		String filter1 = scriptFilter(ctnt);
+		String filter2 = sewarWordFilter(filter1);
 		int i_user = vo.getI_user();
 		
 		BoardVO param = new BoardVO();
@@ -57,7 +59,7 @@ public class RegModSER extends HttpServlet {
 			param.setI_board(Utils.parseStringToInt(strI_board));
 		}
 		param.setTitle(title);
-		param.setCtnt(ctnt);
+		param.setCtnt(filter2);
 		param.setI_user(i_user);
 		
 		int result = 0;
@@ -83,5 +85,28 @@ public class RegModSER extends HttpServlet {
 			return;
 		}
 	}
-
+	
+	// 욕 필터
+	private String sewarWordFilter(final String ctnt) {
+		String[] filters = {"개새끼", "미친년", "ㄱ ㅐ ㅅ ㅐ ㄲ ㅣ"};
+//		String[] filterResults = {"&lt;script&gt;", "&lt;/script&gt;"};
+		
+		String result = ctnt;
+		for(int i = 0; i < filters.length; i++) {
+			result = ctnt.replace(filters[i], "***");
+		}
+		return result;
+	}
+	
+	// 스크립트 필터
+	private String scriptFilter(final String ctnt) {
+		String[] filters = {"<script>", "</script>"};
+		String[] filterResults = {"&lt;script&gt;", "&lt;/script&gt;"};
+		
+		String result = ctnt;
+		for(int i = 0; i < filters.length; i++) {
+			result = ctnt.replace(filters[i], filterResults[i]);
+		}
+		return result;
+	}
 }
