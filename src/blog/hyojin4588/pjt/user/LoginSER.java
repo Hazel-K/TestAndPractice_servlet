@@ -13,6 +13,7 @@ import blog.hyojin4588.pjt.Const;
 import blog.hyojin4588.pjt.Utils;
 import blog.hyojin4588.pjt.ViewResolver;
 import blog.hyojin4588.pjt.db.UserDAO;
+import blog.hyojin4588.pjt.vo.UserLoginHistoryVO;
 import blog.hyojin4588.pjt.vo.UserVO;
 
 @WebServlet("/login")
@@ -20,6 +21,13 @@ public class LoginSER extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession hs = request.getSession();
+		UserVO vo = (UserVO)hs.getAttribute(Const.LOGIN_USER);
+		if (null != vo) {
+			response.sendRedirect("boardlist");
+			return;
+		}
+		
 		ViewResolver.forward("user/Login", request, response);
 	}
 	
@@ -50,7 +58,48 @@ public class LoginSER extends HttpServlet {
 		}
 		HttpSession hs = request.getSession(); // 세션을 가져온다
 		hs.setAttribute(Const.LOGIN_USER, param); // 세션에 해당 정보를 넣는다.
+		
+		UserLoginHistoryVO ulhVO = new UserLoginHistoryVO();
+		String agent = request.getHeader("User-Agent");
+		String os = getOs(agent);
+		String addr = request.getRemoteAddr();
+		String browser = getBrowser(agent);
+		ulhVO.setI_user(param.getI_user());
+		ulhVO.setIp_addr(addr);
+		ulhVO.setOs(os);
+		ulhVO.setBrowser(browser);
+//		System.out.println(os);
+//		System.out.println(browser);
+//		System.out.println(addr);
+		UserDAO.insUserLoginHistory(ulhVO);
+		
 		response.sendRedirect("boardlist");
+	}
+	
+	private String getBrowser(String agent) {
+		if(agent.contains("msie")) {
+			return "IE";
+		} else if(agent.toLowerCase().contains("chrome")) {
+			return "chrome";
+		} else if(agent.toLowerCase().contains("safari")) {
+			return "safari";
+		}
+		return "";
+	}
+	
+	private String getOs(String agent) {
+		if(agent.contains("mac")) {
+			return "mac";
+		} else if(agent.toLowerCase().contains("windows")) {
+			return "win";
+		} else if(agent.toLowerCase().contains("x11")) {
+			return "linux";
+		} else if(agent.toLowerCase().contains("android")) {
+			return "android";
+		} else if(agent.toLowerCase().contains("iphone")) {
+			return "iOS";
+		}
+		return "";
 	}
 
 }
