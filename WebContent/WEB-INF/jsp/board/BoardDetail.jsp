@@ -116,7 +116,7 @@
 	
 	function doHighlight() {
 		let searchText = '${param.searchText}';
-		let regExp = new RegExp('${param.searchText}');
+		let regExp = new RegExp('${param.searchText}', 'gi');
 		let searchType = '${param.searchType}';
 		
 		switch(searchType) {
