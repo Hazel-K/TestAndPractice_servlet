@@ -24,7 +24,7 @@
 					<!-- 세션과 서블릿에 설정한 attribute 사용 -->
 				</c:when>
 				<c:otherwise>
-					<img width="30px" height="30px" src="${'/img/default_profile.jpg'}">
+					<img width="30px" height="30px" src="/img/default_profile.jpg">
 					<!-- web-inf 폴더 안에 있는거 사용 -->
 				</c:otherwise>
 			</c:choose>
@@ -80,7 +80,7 @@
 							</c:when>
 							<c:otherwise>
 								<img width="30px" height="30px"
-									src="${'/img/default_profile.jpg'}">
+									src="/img/default_profile.jpg">
 								<!-- web-inf 폴더 안에 있는거 사용 -->
 							</c:otherwise>
 						</c:choose> ${item.u_nm}</td>

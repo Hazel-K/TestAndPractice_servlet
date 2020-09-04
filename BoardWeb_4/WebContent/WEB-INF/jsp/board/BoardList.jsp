@@ -51,7 +51,7 @@ span {
 						</c:when>
 						<c:otherwise>
 							<img width="30px" height="3s0px"
-								src="${'/img/default_profile.jpg'}">
+								src="`">
 							<!-- web-inf 폴더 안에 있는거 사용 -->
 						</c:otherwise>
 				</c:choose>
